@@ -234,7 +234,7 @@ export default function IndexPage() {
           <div className="flex flex-col gap-6 flex-wrap">
             <h2 className={subtitle()}>Detalle:</h2>
 
-            {fields.map((field, index) => {
+            {fields.map((_, index) => {
               return (
                 <div
                   key={index}
