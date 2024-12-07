@@ -1,5 +1,4 @@
 "use client";
-import { FormValues } from "@/utils";
 import {
   Document,
   Page,
@@ -9,6 +8,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 
+import { FormValues } from "@/utils";
 
 const styles = StyleSheet.create({
   page: {
@@ -411,7 +411,7 @@ const PDF = ({
                       $
                       {item?.precio && item?.cantidad
                         ? (item?.precio * item?.cantidad).toLocaleString(
-                            "es-ES"
+                            "es-ES",
                           )
                         : 0}
                     </Text>
