@@ -1,5 +1,5 @@
 import { Button } from "@nextui-org/button";
-import { PDFViewer } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { Control, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 
@@ -350,29 +350,65 @@ export default function IndexPage() {
             </Button>
           </div>
         </form>
-        {loaded ? (
-          <PDFViewer height={1200}>
-            <PDF
-              IVAcondicion={datos.IVAcondicion}
-              IVAnumero={datos.IVAnumero}
-              PyP={datos.PyP}
-              TEM={datos.TEM}
-              cliente={datos.cliente}
-              comprobante={datos.comprobante}
-              condVenta={datos.condVenta}
-              contacto={datos.contacto}
-              domicilio={datos.domicilio}
-              expediente={datos.expediente}
-              fecha={datos.fecha}
-              ingBruto={datos.ingBruto}
-              itemsList={datos.itemsList}
-              presupuesto={datos.presupuesto}
-              vendedor={datos.vendedor}
-            />
-          </PDFViewer>
-        ) : (
-          ""
-        )}
+        <span className="hidden md:block w-full">
+          {loaded ? (
+            <PDFViewer className="w-full" height={1200}>
+              <PDF
+                IVAcondicion={datos.IVAcondicion}
+                IVAnumero={datos.IVAnumero}
+                PyP={datos.PyP}
+                TEM={datos.TEM}
+                cliente={datos.cliente}
+                comprobante={datos.comprobante}
+                condVenta={datos.condVenta}
+                contacto={datos.contacto}
+                domicilio={datos.domicilio}
+                expediente={datos.expediente}
+                fecha={datos.fecha}
+                ingBruto={datos.ingBruto}
+                itemsList={datos.itemsList}
+                presupuesto={datos.presupuesto}
+                vendedor={datos.vendedor}
+              />
+            </PDFViewer>
+          ) : (
+            ""
+          )}
+        </span>
+        <div className="md:hidden flex justify-center w-full">
+          <PDFDownloadLink
+            className="bg-green-800  py-4 px-6 rounded mx-auto"
+            document={
+              <PDF
+                IVAcondicion={datos.IVAcondicion}
+                IVAnumero={datos.IVAnumero}
+                PyP={datos.PyP}
+                TEM={datos.TEM}
+                cliente={datos.cliente}
+                comprobante={datos.comprobante}
+                condVenta={datos.condVenta}
+                contacto={datos.contacto}
+                domicilio={datos.domicilio}
+                expediente={datos.expediente}
+                fecha={datos.fecha}
+                ingBruto={datos.ingBruto}
+                itemsList={datos.itemsList}
+                presupuesto={datos.presupuesto}
+                vendedor={datos.vendedor}
+              />
+            }
+            fileName={datos.expediente + " - presupuesto"}
+          >
+            {/* @ts-ignore */}
+            {({ loading }) =>
+              loading ? (
+                <span>Cargando documento...</span>
+              ) : (
+                <span>Descargar</span>
+              )
+            }
+          </PDFDownloadLink>
+        </div>
       </section>
     </DefaultLayout>
   );
