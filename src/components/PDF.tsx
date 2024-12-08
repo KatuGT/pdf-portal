@@ -7,8 +7,17 @@ import {
   StyleSheet,
   Image,
 } from "@react-pdf/renderer";
+import { ToWords } from "to-words";
 
-import { FormValues } from "@/utils";
+const toWords = new ToWords({
+  localeCode: "es-MX", // Soporta varios idiomas
+  converterOptions: {
+    currency: false,
+    ignoreDecimal: false,
+  },
+});
+
+import { FormValues, getTotal } from "@/utils";
 
 const styles = StyleSheet.create({
   page: {
@@ -26,7 +35,7 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     height: "auto",
-    width: "45%",
+    width: "100%",
     objectFit: "contain",
   },
   headerData: {
@@ -100,18 +109,42 @@ const PDF = ({
   domicilio,
   vendedor,
   contacto,
-  IVA,
+  IVAcondicion,
   expediente,
   condVenta,
+  IVAnumero,
+  PyP,
+  TEM,
+  ingBruto,
 }: FormValues) => {
   const [year, month, day] = fecha.split("-");
+
+  const totalItemList = getTotal(itemsList);
+
+  const numeroAtexto = toWords.convert(
+    totalItemList
+      ? parseFloat(totalItemList.replace(/\./g, "").replace(",", "."))
+      : 0
+  );
+
+  const total =
+    parseFloat(totalItemList.replace(/\./g, "").replace(",", ".")) +
+    (ingBruto ? +ingBruto : 0) +
+    (TEM ? +TEM : 0) +
+    (PyP ? +PyP : 0) +
+    (IVAnumero ? +IVAnumero : 0);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.mainContainer}>
           <View style={styles.header}>
-            <Image src="./logo-portal.png" style={styles.headerImage} />
+            <View style={{ width: "50%" }}>
+              <Image src="./logo-portal.png" style={styles.headerImage} />
+              <Text style={[styles.textSize, { textAlign: "center" }]}>
+                Pje. Jose Antonio Garcia 1438 - CP.: 4000
+              </Text>
+            </View>
             <View style={styles.headerData}>
               <View
                 style={[
@@ -144,7 +177,7 @@ const PDF = ({
                 ]}
               >
                 <Image
-                  src="./x.png"
+                  src="./X.png"
                   style={{
                     height: 30,
                     width: 30,
@@ -303,7 +336,7 @@ const PDF = ({
                     { flex: 2, textAlign: "left", marginLeft: 3 },
                   ]}
                 >
-                  {IVA}
+                  {IVAcondicion}
                 </Text>
               </View>
               <View style={styles.datoHeader}>
@@ -390,7 +423,7 @@ const PDF = ({
                       { flex: 1, textAlign: "center" },
                     ]}
                   >
-                    <Text>{index + 1}</Text>
+                    <Text>{item.item}</Text>
                   </View>
                   <View style={[styles.detallePadding, { flex: 15 }]}>
                     <Text>{item.descripcion}</Text>
@@ -411,7 +444,7 @@ const PDF = ({
                       $
                       {item?.precio && item?.cantidad
                         ? (item?.precio * item?.cantidad).toLocaleString(
-                            "es-ES",
+                            "es-ES"
                           )
                         : 0}
                     </Text>
@@ -422,6 +455,98 @@ const PDF = ({
             <View style={[styles.linea, { left: 315 }]} />
             <View style={[styles.linea, { left: 363 }]} />
             <View style={[styles.linea, { left: 445 }]} />
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              position: "relative",
+              top: "-1px",
+            }}
+          >
+            <View
+              style={{
+                padding: 5,
+              }}
+            >
+              <Text style={styles.textSize}>Observaciones:</Text>
+              <Text style={styles.textSize}>Son {numeroAtexto}.-</Text>
+              <Text style={styles.textSize}>
+                Mantenimiento de Oferta: Según pliego
+              </Text>
+              <Text style={styles.textSize}>
+                Entrega de Materiales: Según pliego
+              </Text>
+              <Text style={styles.textSize}>
+                Garantia de los bienes: Según pliego
+              </Text>
+              <Text style={styles.textSize}>Forma de Pago: Según pliego</Text>
+            </View>
+            <View
+              style={[
+                styles.border,
+                {
+                  width: 172,
+                  display: "flex",
+                  flexDirection: "row",
+                },
+              ]}
+            >
+              <View
+                style={{
+                  flex: 0.91,
+                  borderRight: "1px solid black",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 3,
+                  padding: 5,
+                }}
+              >
+                <Text style={[styles.textSize, { textAlign: "right" }]}>
+                  Subtotal:
+                </Text>
+                <Text style={[styles.textSize, { textAlign: "right" }]}>
+                  I.V.A:
+                </Text>
+                <Text style={[styles.textSize, { textAlign: "right" }]}>
+                  ing. Brutos:
+                </Text>
+                <Text style={[styles.textSize, { textAlign: "right" }]}>
+                  T.E.M:
+                </Text>
+                <Text style={[styles.textSize, { textAlign: "right" }]}>
+                  PyP:
+                </Text>
+                <Text style={[styles.textSize, { textAlign: "right" }]}>
+                  Total:
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 3,
+                  padding: 5,
+                }}
+              >
+                <Text style={styles.textSize}>${totalItemList}</Text>
+                <Text style={styles.textSize}>
+                  ${IVAnumero ? IVAnumero : 0}
+                </Text>
+                <Text style={styles.textSize}>${ingBruto ? ingBruto : 0}</Text>
+                <Text style={styles.textSize}>${TEM ? TEM : 0}</Text>
+                <Text style={styles.textSize}>${PyP ? PyP : 0}</Text>
+                <Text style={styles.textSize}>
+                  $
+                  {total.toLocaleString("es-ES", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
       </Page>

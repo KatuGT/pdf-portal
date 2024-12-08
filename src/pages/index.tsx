@@ -3,23 +3,17 @@ import { PDFViewer } from "@react-pdf/renderer";
 import { Control, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 
+import Logo from "/public/logo-portal.png";
+
 import DefaultLayout from "@/layouts/default";
 import { subtitle } from "@/components/primitives";
-import Logo from "../../public/logo-portal.png";
 import PDF from "@/components/PDF";
-import { defaultDataCliente, defaultDataVendedor, FormValues } from "@/utils";
-
-function getTotal(payload: FormValues["itemsList"]) {
-  let total = 0;
-
-  for (const item of payload) {
-    if (item.precio && item.cantidad) {
-      total = total + +item.precio * +item.cantidad;
-    }
-  }
-
-  return total.toLocaleString("es-ES");
-}
+import {
+  defaultDataCliente,
+  defaultDataVendedor,
+  FormValues,
+  getTotal,
+} from "@/utils";
 
 function TotalAmout({ control }: { control: Control<FormValues> }) {
   const cartValues = useWatch({
@@ -27,7 +21,7 @@ function TotalAmout({ control }: { control: Control<FormValues> }) {
     name: "itemsList",
   });
 
-  return <span>Monto total: ${getTotal(cartValues)}</span>;
+  return <span>Monto subtotal: ${getTotal(cartValues)}</span>;
 }
 
 export default function IndexPage() {
@@ -35,6 +29,7 @@ export default function IndexPage() {
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0"); // Mes empieza en 0
   const day = String(today.getDate()).padStart(2, "0");
+
   const { register, watch, control, reset, getValues, setValue } =
     useForm<FormValues>({
       defaultValues: {
@@ -52,9 +47,13 @@ export default function IndexPage() {
         domicilio: "",
         vendedor: "",
         contacto: "",
-        IVA: "EXENTO",
+        IVAcondicion: "EXENTO",
         expediente: "",
         condVenta: "CTA CTE",
+        ingBruto: null,
+        IVAnumero: null,
+        PyP: null,
+        TEM: null,
       },
     });
 
@@ -67,8 +66,6 @@ export default function IndexPage() {
   });
 
   const datos = watch();
-
-  // console.log(datos);
 
   const cliente = watch("cliente");
   const vendedor = watch("vendedor");
@@ -162,7 +159,7 @@ export default function IndexPage() {
                 />
                 <datalist id="clientes">
                   <option value="DIRECCION DE MATERIALES Y CONSTRUCCIONES ESCOLARES" />
-                  <option value="Policia" />
+                  <option value="DEPTO GRAL DE POLICIA" />
                 </datalist>
               </label>
               <label className="flex flex-col gap-1">
@@ -200,11 +197,13 @@ export default function IndexPage() {
             </div>
             <div className="flex flex-col gap-6">
               <label className="flex flex-col gap-1">
-                <span>I.V.A.: </span>
+                <span>
+                  I.V.A. (<i>Condición</i>):{" "}
+                </span>
                 <input
                   className="py-1 px-2 border border-gray-500 rounded"
                   defaultValue={"EXENTO"}
-                  {...register(`IVA`, {
+                  {...register(`IVAcondicion`, {
                     required: true,
                   })}
                 />
@@ -229,6 +228,50 @@ export default function IndexPage() {
                 />
               </label>
             </div>
+            <div className="flex flex-col gap-6">
+              <label className="flex flex-col gap-1">
+                <span>I.V.A. : </span>
+                <input
+                  className="py-1 px-2 border border-gray-500 rounded disabled:opacity-50"
+                  defaultValue={"EXENTO"}
+                  {...register(`IVAnumero`, {
+                    required: true,
+                  })}
+                  disabled={datos.IVAcondicion === "EXENTO"}
+                  type="number"
+                />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span>ing. Brutos:</span>
+                <input
+                  {...register(`ingBruto`, {
+                    required: true,
+                  })}
+                  className="py-1 px-2 border border-gray-500 rounded"
+                  type="number"
+                />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span>T.E.M: </span>
+                <input
+                  className="py-1 px-2 border border-gray-500 rounded"
+                  {...register(`TEM`, {
+                    required: true,
+                  })}
+                  type="number"
+                />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span>PyP: </span>
+                <input
+                  className="py-1 px-2 border border-gray-500 rounded"
+                  {...register(`PyP`, {
+                    required: true,
+                  })}
+                  type="number"
+                />
+              </label>
+            </div>
           </div>
           <hr className="my-5" />
           <div className="flex flex-col gap-6 flex-wrap">
@@ -240,6 +283,15 @@ export default function IndexPage() {
                   key={index}
                   className="flex gap-6 flex-wrap border-b-neutral-600 border-b-1 pb-6 "
                 >
+                  <label className="flex flex-col gap-1 shrink-0 w-14">
+                    <span>Item: </span>
+                    <input
+                      className="py-1 px-2 border border-gray-500 rounded"
+                      {...register(`itemsList.${index}.item`, {
+                        required: true,
+                      })}
+                    />
+                  </label>
                   <label className="flex flex-col gap-1 flex-1">
                     <span>Descripción: </span>
                     <input
@@ -290,6 +342,7 @@ export default function IndexPage() {
                   descripcion: "",
                   cantidad: 1,
                   precio: 0,
+                  item: "",
                 });
               }}
             >
@@ -300,7 +353,10 @@ export default function IndexPage() {
         {loaded ? (
           <PDFViewer height={1200}>
             <PDF
-              IVA={datos.IVA}
+              IVAcondicion={datos.IVAcondicion}
+              IVAnumero={datos.IVAnumero}
+              PyP={datos.PyP}
+              TEM={datos.TEM}
               cliente={datos.cliente}
               comprobante={datos.comprobante}
               condVenta={datos.condVenta}
@@ -308,6 +364,7 @@ export default function IndexPage() {
               domicilio={datos.domicilio}
               expediente={datos.expediente}
               fecha={datos.fecha}
+              ingBruto={datos.ingBruto}
               itemsList={datos.itemsList}
               presupuesto={datos.presupuesto}
               vendedor={datos.vendedor}
@@ -316,26 +373,6 @@ export default function IndexPage() {
         ) : (
           ""
         )}
-        {/* <PDFDownloadLink}
-        document={
-          <PDF
-            IVA={datos.IVA}
-            cliente={datos.cliente}
-            comprobante={datos.comprobante}
-            condVenta={datos.condVenta}
-            contacto={datos.contacto}
-            domicilio={datos.domicilio}
-            expediente={datos.expediente}
-            fecha={datos.fecha}
-            itemsList={datos.itemsList}
-            presupuesto={datos.presupuesto}
-            vendedor={datos.vendedor}
-          />
-        }
-        fileName="dsfdsf"
-      >
-        Descargar
-      </PDFDownloadLink> */}
       </section>
     </DefaultLayout>
   );
