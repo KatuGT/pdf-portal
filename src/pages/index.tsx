@@ -40,7 +40,7 @@ export default function IndexPage() {
             precio: null,
           },
         ],
-        comprobante: "",
+        comprobante: "PRESUPUESTO",
         presupuesto: "",
         fecha: `${year}-${month}-${day}`,
         cliente: "",
@@ -341,7 +341,7 @@ export default function IndexPage() {
                 append({
                   descripcion: "",
                   cantidad: 1,
-                  precio: 0,
+                  precio: null,
                   item: "",
                 });
               }}

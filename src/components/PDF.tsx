@@ -153,7 +153,7 @@ const PDF = ({
                     borderRightColor: "black",
                     borderRightStyle: "solid",
                     borderRightWidth: 1,
-                    flex: 1,
+                    flex: 0.8,
                   },
                 ]}
               >
@@ -194,6 +194,7 @@ const PDF = ({
                       textAlign: "center",
                       marginHorizontal: "auto",
                       fontSize: 6,
+                      paddingHorizontal:3
                     },
                   ]}
                 >
@@ -209,8 +210,12 @@ const PDF = ({
                   </Text>
                   <Text
                     style={[
-                      styles.textSize,
-                      { flex: 0.8, textAlign: "left", marginLeft: 3 },
+                      {
+                        flex: 0.9,
+                        textAlign: "left",
+                        marginLeft: 3,
+                        fontSize: 8,
+                      },
                     ]}
                   >
                     {comprobante}
@@ -224,7 +229,7 @@ const PDF = ({
                   <Text
                     style={[
                       styles.textSize,
-                      { flex: 0.8, textAlign: "left", marginLeft: 3 },
+                      { flex: 0.9, textAlign: "left", marginLeft: 3 },
                     ]}
                   >
                     {presupuesto}
@@ -235,7 +240,7 @@ const PDF = ({
                   <Text
                     style={[
                       styles.textSize,
-                      { flex: 0.8, textAlign: "left", marginLeft: 3 },
+                      { flex: 0.9, textAlign: "left", marginLeft: 3 },
                     ]}
                   >
                     {`${day}/${month}/${year}`}
