@@ -134,6 +134,8 @@ const PDF = ({
     (PyP ? +PyP : 0) +
     (IVAnumero ? +IVAnumero : 0);
 
+  console.log(itemsList);
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -194,7 +196,7 @@ const PDF = ({
                       textAlign: "center",
                       marginHorizontal: "auto",
                       fontSize: 6,
-                      paddingHorizontal:3
+                      paddingHorizontal: 3,
                     },
                   ]}
                 >
@@ -442,7 +444,15 @@ const PDF = ({
                     <Text>{item.cantidad}</Text>
                   </View>
                   <View style={[styles.detallePadding, { flex: 4 }]}>
-                    <Text>${item?.precio?.toLocaleString("es-ES")}</Text>
+                    <Text>
+                      $
+                      {item?.precio
+                        ? Number(item?.precio)?.toLocaleString("es-ES", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        : 0}
+                    </Text>
                   </View>
                   <View style={[styles.detallePadding, { flex: 4 }]}>
                     <Text>
