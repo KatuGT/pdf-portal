@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 
 import Logo from "/public/logo-portal.png";
 
+import { Checkbox } from "@nextui-org/checkbox";
+
 import DefaultLayout from "@/layouts/default";
 import { subtitle } from "@/components/primitives";
 import PDF from "@/components/PDF";
@@ -54,6 +56,7 @@ export default function IndexPage() {
         IVAnumero: null,
         PyP: null,
         TEM: null,
+        addsign: true,
       },
     });
 
@@ -272,6 +275,11 @@ export default function IndexPage() {
                 />
               </label>
             </div>
+            <div className="flex flex-col gap-6">
+              <Checkbox defaultSelected {...register(`addsign`)}>
+                Agregar firma (Ezequiel)
+              </Checkbox>
+            </div>
           </div>
           <hr className="my-5" />
           <div className="flex flex-col gap-6 flex-wrap">
@@ -358,6 +366,7 @@ export default function IndexPage() {
                 IVAnumero={datos.IVAnumero}
                 PyP={datos.PyP}
                 TEM={datos.TEM}
+                addsign={datos.addsign}
                 cliente={datos.cliente}
                 comprobante={datos.comprobante}
                 condVenta={datos.condVenta}
@@ -384,6 +393,7 @@ export default function IndexPage() {
                 IVAnumero={datos.IVAnumero}
                 PyP={datos.PyP}
                 TEM={datos.TEM}
+                addsign={datos.addsign}
                 cliente={datos.cliente}
                 comprobante={datos.comprobante}
                 condVenta={datos.condVenta}

@@ -19,6 +19,7 @@ export type FormValues = {
   ingBruto: number | null;
   TEM: number | null;
   PyP: number | null;
+  addsign: boolean;
 };
 
 export const defaultDataCliente: Record<string, { domicilio: string }> = {

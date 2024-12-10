@@ -98,6 +98,14 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderStyle: "solid",
   },
+  firma: {
+    height: 150,
+    width: 200,
+    objectFit: "contain",
+    position: "absolute",
+    left: 150,
+    top: -30,
+  },
 });
 
 const PDF = ({
@@ -116,6 +124,7 @@ const PDF = ({
   PyP,
   TEM,
   ingBruto,
+  addsign,
 }: FormValues) => {
   const [year, month, day] = fecha.split("-");
 
@@ -498,6 +507,9 @@ const PDF = ({
               </Text>
               <Text style={styles.textSize}>Forma de Pago: Según pliego</Text>
             </View>
+            {addsign && (
+              <Image src="./firmaEZEQUIEL2.png" style={styles.firma} />
+            )}
             <View
               style={[
                 styles.border,
