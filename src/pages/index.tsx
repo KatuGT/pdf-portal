@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 
 import Logo from "/public/logo-portal.png";
 
-import { Checkbox } from "@nextui-org/checkbox";
-
 import DefaultLayout from "@/layouts/default";
 import { subtitle } from "@/components/primitives";
 import PDF from "@/components/PDF";
@@ -276,9 +274,14 @@ export default function IndexPage() {
               </label>
             </div>
             <div className="flex flex-col gap-6">
-              <Checkbox defaultSelected {...register(`addsign`)}>
-                Agregar firma (Ezequiel)
-              </Checkbox>
+               <label className="flex gap-3">
+                <input
+                  className="py-1 px-2 border border-gray-500 rounded disabled:opacity-50"
+                  {...register(`addsign`)}
+                  type="checkbox"
+                />
+                <span>Añadir firma(EZEQUIEL) </span>
+              </label>
             </div>
           </div>
           <hr className="my-5" />
