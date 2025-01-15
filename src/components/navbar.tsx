@@ -4,12 +4,22 @@ import {
   NavbarItem,
   NavbarMenuToggle,
 } from "@nextui-org/navbar";
+import Cookies from "js-cookie";
+import { Button } from "@nextui-org/button";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 
 export const Navbar = () => {
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
+      <Button
+        onClick={() => {
+          Cookies.remove("passPortal");
+          window.location.reload();
+        }}
+      >
+        Cerrar sesion
+      </Button>
       <NavbarContent
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"

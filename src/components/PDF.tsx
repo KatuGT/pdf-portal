@@ -10,7 +10,7 @@ import {
 import { ToWords } from "to-words";
 
 const toWords = new ToWords({
-  localeCode: "es-MX", // Soporta varios idiomas
+  localeCode: "es-AR",
   converterOptions: {
     currency: false,
     ignoreDecimal: false,
@@ -133,7 +133,7 @@ const PDF = ({
   const numeroAtexto = toWords.convert(
     totalItemList
       ? parseFloat(totalItemList.replace(/\./g, "").replace(",", "."))
-      : 0
+      : 0,
   );
 
   const total =
@@ -142,8 +142,6 @@ const PDF = ({
     (TEM ? +TEM : 0) +
     (PyP ? +PyP : 0) +
     (IVAnumero ? +IVAnumero : 0);
-
-  console.log(itemsList);
 
   return (
     <Document>
