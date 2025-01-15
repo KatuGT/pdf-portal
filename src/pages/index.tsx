@@ -111,7 +111,7 @@ export default function IndexPage() {
     const password = e.currentTarget.password.value;
 
     if (password) {
-      Cookies.set("passPortal", password);
+      Cookies.set("passPortal", password, { expires: 1 });
       checkLoginStatus();
     }
   };
